@@ -1,12 +1,15 @@
 # cookiecutter-ts
 
-A modern, opinionated TypeScript project template built with the same philosophy as [cookiecutter-python](https://github.com/{{ cookiecutter.github_username }}/cookiecutter-python): strict quality standards, feature flags, and CI/CD ready out of the box.
+A modern, opinionated TypeScript project template. Same philosophy as
+[cookiecutter-python](https://github.com/gao-hongnan/cookiecutter-python):
+strict quality standards, feature flags, and CI/CD ready out of the box.
 
 ## Features
 
 - **pnpm** — fast, disk-efficient package manager
-- **TypeScript 5.x** — strict mode with all safety flags enabled
-- **ultracite** — unified Rust-based linter (oxlint) + formatter (oxfmt) — same stack as [Vercel AI SDK](https://github.com/vercel/ai)
+- **TypeScript 6.x** — strict mode with all safety flags enabled
+- **ultracite** — unified Rust-based linter (oxlint) + formatter (oxfmt) —
+  same stack as [Vercel AI SDK](https://github.com/vercel/ai)
 - **vitest** — fast test runner with coverage
 - **tsup** — zero-config dual ESM/CJS build
 - **husky** + **lint-staged** — pre-commit hooks
@@ -15,14 +18,14 @@ A modern, opinionated TypeScript project template built with the same philosophy
 
 ## Feature Flags
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `use_server` | `false` | Fastify web server with `/health` endpoint |
-| `use_zod` | `true` | Zod runtime validation |
-| `use_docker` | `false` | Multi-stage Dockerfile |
-| `use_prisma` | `false` | Prisma ORM + migrations |
-| `use_cli` | `false` | Commander CLI app |
-| `use_typedoc` | `false` | TypeDoc documentation |
+| Flag          | Default | Description                                |
+| ------------- | ------- | ------------------------------------------ |
+| `use_server`  | `false` | Fastify web server with `/health` endpoint |
+| `use_zod`     | `true`  | Zod runtime validation                     |
+| `use_docker`  | `false` | Multi-stage Dockerfile                     |
+| `use_prisma`  | `false` | Prisma ORM + migrations                    |
+| `use_cli`     | `false` | Commander CLI app                          |
+| `use_typedoc` | `false` | TypeDoc documentation                      |
 
 ## Usage
 
