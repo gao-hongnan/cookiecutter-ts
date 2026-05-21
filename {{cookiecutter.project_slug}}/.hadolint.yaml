@@ -1,0 +1,7 @@
+ignore:
+  - DL3008
+  - DL3016
+  - DL3018
+trustedRegistries:
+  - docker.io
+  - ghcr.io

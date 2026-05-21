@@ -1,0 +1,15 @@
+{
+  "ignorePatterns": [
+    "dist/**",
+    "coverage/**",
+    "node_modules/**",
+    "prisma/**"
+  ],
+  "rules": {
+    "import/first": "error",
+    "import/no-cycle": "error",
+    "import/no-duplicates": "error",
+    "typescript/consistent-type-imports": "error",
+    "no-unused-vars": "error"
+  }
+}

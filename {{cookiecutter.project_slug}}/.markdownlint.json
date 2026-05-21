@@ -1,0 +1,7 @@
+{
+  "default": true,
+  "line-length": { "line_length": 200 },
+  "no-inline-html": {
+    "allowed_elements": ["br", "details", "summary", "kbd", "sup", "sub"]
+  }
+}

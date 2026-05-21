@@ -1,0 +1,58 @@
+{
+  "name": "{{ cookiecutter.project_slug }}",
+  "version": "0.1.0",
+  "description": "{{ cookiecutter.project_description }}",
+  "author": "{{ cookiecutter.author_name }} <{{ cookiecutter.author_email }}>",
+  "license": "{{ cookiecutter.license }}",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "format": "ultracite fix",
+    "lint": "ultracite fix",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "audit": "pnpm audit --audit-level=high",
+    "ci": "pnpm run check && pnpm run typecheck && pnpm run test:cov && pnpm run audit",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
+    "@types/node": "^25.0.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^17.0.0",
+    "oxfmt": "^0.51.0",
+    "oxlint": "^1.66.0",
+    "tsup": "^8.0.0",
+    "typescript": "^6.0.0",
+    "ultracite": "^7.7.0",
+    "vitest": "^4.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": ["ultracite fix"]
+  },
+  "engines": {
+    "node": ">={{ cookiecutter.node_version }}.0.0"
+  },
+  "packageManager": "pnpm@10.0.0"
+}
