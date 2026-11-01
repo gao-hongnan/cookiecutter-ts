@@ -3,7 +3,8 @@
     "dist/**",
     "coverage/**",
     "node_modules/**",
-    "prisma/**"
+    "prisma/**",
+    "src/generated/**"
   ],
   "rules": {
     "import/first": "error",
