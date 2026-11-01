@@ -13,7 +13,7 @@ def validate_project_slug() -> None:
 
 def validate_node_version() -> None:
     version = "{{ cookiecutter.node_version }}"
-    allowed = {"20", "22"}
+    allowed = {"22", "24", "26"}
     if version not in allowed:
         print(f"ERROR: node_version '{version}' is not supported.")
         print(f"Allowed values: {sorted(allowed)}")

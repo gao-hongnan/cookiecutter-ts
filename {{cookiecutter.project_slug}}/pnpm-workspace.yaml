@@ -1,0 +1,10 @@
+# pnpm settings (pnpm 11+ reads these from here, not from .npmrc).
+# Dependencies listed under allowBuilds may run install scripts; any other
+# package that wants to run one fails the install until it is reviewed with
+# `pnpm approve-builds`.
+allowBuilds:
+  esbuild: true
+{%- if cookiecutter.use_prisma %}
+  prisma: true
+  '@prisma/engines': true
+{%- endif %}

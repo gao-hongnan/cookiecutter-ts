@@ -4,6 +4,20 @@ import subprocess
 from pathlib import Path
 
 
+def flag(value: str) -> bool:
+    # Cookiecutter renders boolean variables as "True"/"False", while values
+    # passed on the command line or from a replay file may be lowercase.
+    return value.strip().lower() in {"true", "yes", "y", "1"}
+
+
+USE_ZOD = flag("{{ cookiecutter.use_zod }}")
+USE_SERVER = flag("{{ cookiecutter.use_server }}")
+USE_DOCKER = flag("{{ cookiecutter.use_docker }}")
+USE_PRISMA = flag("{{ cookiecutter.use_prisma }}")
+USE_CLI = flag("{{ cookiecutter.use_cli }}")
+USE_TYPEDOC = flag("{{ cookiecutter.use_typedoc }}")
+
+
 def remove(path: str) -> None:
     p = Path(path)
     if p.is_dir():
@@ -14,21 +28,21 @@ def remove(path: str) -> None:
 
 def run(cmd: list[str], description: str) -> bool:
     try:
-        subprocess.run(cmd, check=True, capture_output=True)
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
         print(f"✓ {description}")
         return True
-    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+    except FileNotFoundError as e:
         print(f"⚠ {description} failed (non-fatal): {e}")
+        return False
+    except subprocess.CalledProcessError as e:
+        print(f"⚠ {description} failed (non-fatal): exit code {e.returncode}")
+        output = (e.stderr or e.stdout or "").strip()
+        if output:
+            print("\n".join(f"    {line}" for line in output.splitlines()[-15:]))
         return False
 
 
 def update_package_json() -> None:
-    use_zod = "{{ cookiecutter.use_zod }}" == "true"
-    use_server = "{{ cookiecutter.use_server }}" == "true"
-    use_cli = "{{ cookiecutter.use_cli }}" == "true"
-    use_prisma = "{{ cookiecutter.use_prisma }}" == "true"
-    use_typedoc = "{{ cookiecutter.use_typedoc }}" == "true"
-
     pkg_path = Path("package.json")
     pkg: dict = json.loads(pkg_path.read_text())
 
@@ -36,61 +50,66 @@ def update_package_json() -> None:
     dev_deps: dict = pkg.setdefault("devDependencies", {})
     scripts: dict = pkg.setdefault("scripts", {})
 
-    if not use_zod:
+    if not USE_ZOD:
         deps.pop("zod", None)
 
-    if use_server:
-        deps["fastify"] = "^5.0.0"
-        dev_deps["tsx"] = "^4.0.0"
+    if USE_SERVER:
+        deps["fastify"] = "^5.12.7"
+        dev_deps["tsx"] = "^4.23.15"
         scripts["dev:server"] = "tsx watch src/server.ts"
         scripts["start"] = "node dist/server.js"
 
-    if use_cli:
-        deps["commander"] = "^13.0.0"
+    if USE_CLI:
+        deps["commander"] = "^15.0.0"
+        pkg["bin"] = {"{{ cookiecutter.project_slug }}": "./dist/cli.js"}
 
-    if use_prisma:
-        deps["@prisma/client"] = "^6.0.0"
-        dev_deps["prisma"] = "^6.0.0"
+    if USE_PRISMA:
+        deps["@prisma/client"] = "^7.10.1"
+        dev_deps["prisma"] = "^7.10.1"
+        dev_deps["dotenv"] = "^18.0.9"
         scripts["db:push"] = "prisma db push"
         scripts["db:migrate"] = "prisma migrate dev"
         scripts["db:studio"] = "prisma studio"
         scripts["db:generate"] = "prisma generate"
+        # The generated client lives in src/generated/ and is gitignored, so
+        # typecheck and build need it regenerated after every fresh install.
+        scripts["postinstall"] = "prisma generate"
 
-    if use_typedoc:
-        dev_deps["typedoc"] = "^0.28.0"
-        scripts["docs:build"] = "typedoc src/index.ts --out docs"
-        scripts["docs:serve"] = "npx serve docs"
+    if USE_TYPEDOC:
+        dev_deps["typedoc"] = "^0.28.20"
+        scripts["docs:build"] = "typedoc"
+        scripts["docs:serve"] = "pnpm dlx serve docs"
 
-    # Remove empty dependencies block if no runtime deps
+    # Keep dependency blocks sorted, as pnpm does, and drop an empty one
+    pkg["dependencies"] = dict(sorted(deps.items()))
+    pkg["devDependencies"] = dict(sorted(dev_deps.items()))
     if not deps:
-        pkg.pop("dependencies", None)
+        pkg.pop("dependencies")
 
     pkg_path.write_text(json.dumps(pkg, indent=2) + "\n")
 
 
 def remove_conditional_files() -> None:
-    use_docker = "{{ cookiecutter.use_docker }}" == "true"
-    use_prisma = "{{ cookiecutter.use_prisma }}" == "true"
-    use_server = "{{ cookiecutter.use_server }}" == "true"
-    use_cli = "{{ cookiecutter.use_cli }}" == "true"
-    use_typedoc = "{{ cookiecutter.use_typedoc }}" == "true"
-
-    if not use_docker:
+    if not USE_DOCKER:
         remove("environments")
         remove(".dockerignore")
         remove(".hadolint.yaml")
 
-    if not use_prisma:
+    if not USE_PRISMA:
         remove("prisma")
+        remove("prisma.config.ts")
 
-    if not use_server:
+    if not USE_SERVER:
+        remove("src/app.ts")
         remove("src/server.ts")
         remove("tests/server.test.ts")
 
-    if not use_cli:
+    if not USE_CLI:
+        remove("src/program.ts")
         remove("src/cli.ts")
+        remove("tests/program.test.ts")
 
-    if not use_typedoc:
+    if not USE_TYPEDOC:
         remove("typedoc.json")
 
 

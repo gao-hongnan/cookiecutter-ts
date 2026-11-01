@@ -1,16 +1,28 @@
+import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import Fastify, { type FastifyInstance } from 'fastify';
+import { buildApp } from '../src/app.js';
+import { VERSION } from '../src/index.js';
 
 let app: FastifyInstance;
 
 beforeAll(async () => {
-  app = Fastify();
-  app.get('/health', async () => ({ status: 'ok' }));
+  app = buildApp();
   await app.ready();
 });
 
 afterAll(async () => {
   await app.close();
+});
+
+describe('GET /', () => {
+  it('returns the package name and version', async () => {
+    const res = await app.inject({ method: 'GET', url: '/' });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual({
+      name: '{{ cookiecutter.project_slug }}',
+      version: VERSION,
+    });
+  });
 });
 
 describe('GET /health', () => {

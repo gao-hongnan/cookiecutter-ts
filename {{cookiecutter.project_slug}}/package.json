@@ -32,21 +32,21 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "zod": "^3.24.0"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@commitlint/cli": "^21.0.0",
-    "@commitlint/config-conventional": "^21.0.0",
-    "@types/node": "^25.0.0",
-    "@vitest/coverage-v8": "^4.0.0",
-    "husky": "^9.0.0",
-    "lint-staged": "^17.0.0",
-    "oxfmt": "^0.51.0",
-    "oxlint": "^1.66.0",
-    "tsup": "^8.0.0",
-    "typescript": "^6.0.0",
-    "ultracite": "^7.7.0",
-    "vitest": "^4.0.0"
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@types/node": "^{{ cookiecutter.node_version }}.0.0",
+    "@vitest/coverage-v8": "^5.0.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "tsup": "^9.0.0",
+    "typescript": "^6.0.3",
+    "ultracite": "^8.1.0",
+    "vitest": "^5.0.5"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": ["ultracite fix"]
@@ -54,5 +54,5 @@
   "engines": {
     "node": ">={{ cookiecutter.node_version }}.0.0"
   },
-  "packageManager": "pnpm@10.0.0"
+  "packageManager": "pnpm@12.16.1"
 }

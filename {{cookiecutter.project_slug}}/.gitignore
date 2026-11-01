@@ -8,6 +8,13 @@ esm/
 cjs/
 *.tsbuildinfo
 
+# Generated code (Prisma client)
+src/generated/
+
+# Local databases
+*.db
+*.db-journal
+
 # Testing & coverage
 coverage/
 
@@ -37,3 +44,6 @@ tmp/
 scratch/
 playground.ts
 *.tgz
+
+# Generated API docs
+docs/

@@ -3,15 +3,18 @@
 # ── deps stage ────────────────────────────────────────────────────────────────
 FROM node:{{ cookiecutter.node_version }}-alpine AS deps
 WORKDIR /app
-RUN corepack enable pnpm
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod
+# Node 25+ no longer bundles corepack; install it so the packageManager
+# field in package.json selects the pnpm version.
+RUN npm install --global corepack@latest && corepack enable pnpm
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+# --ignore-scripts: lifecycle scripts (husky, prisma generate) need devDependencies.
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 # ── build stage ───────────────────────────────────────────────────────────────
 FROM node:{{ cookiecutter.node_version }}-alpine AS build
 WORKDIR /app
-RUN corepack enable pnpm
-COPY package.json pnpm-lock.yaml ./
+RUN npm install --global corepack@latest && corepack enable pnpm
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build
